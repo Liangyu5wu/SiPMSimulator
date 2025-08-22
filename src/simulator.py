@@ -137,6 +137,18 @@ class SiPMSimulator:
         y_range = filter_config['y_range']
         mask &= (y >= y_range[0]) & (y <= y_range[1])
         
+        # Apply photon limit if debug mode enabled
+        debug_config = self.config.get('debug', {})
+        if debug_config.get('verbose', False):
+            max_photons = debug_config.get('max_photons_per_event', 10000)
+            if np.sum(mask) > max_photons:
+                print(f"Event has {np.sum(mask)} photons, limiting to {max_photons}")
+                indices = np.random.choice(np.sum(mask), max_photons, replace=False)
+                mask_indices = np.where(mask)[0][indices]
+                new_mask = np.zeros_like(mask, dtype=bool)
+                new_mask[mask_indices] = True
+                mask = new_mask
+        
         return {
             'x': x[mask],
             'y': y[mask], 
