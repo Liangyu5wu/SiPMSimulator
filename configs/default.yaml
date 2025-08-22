@@ -16,7 +16,7 @@ photon_filter:
 # Waveform generation
 waveform:
   time_window: [-30, 50]  # Total time window for waveform in ns
-  time_step: 0.01          # Time sampling in ns
+  time_step: 0.05          # Time sampling in ns
   baseline_range: [-20, -5]  # Time range for noise estimation in ns
 
 # Noise model
@@ -34,10 +34,8 @@ io:
 
 # ROOT file processing
 root_files:
-  base_path: "/fs/ddn/sdf/group/atlas/d/liangyu/dSiPM/fasttiming/SPR_data/single_pions"
-  particle_type: "pi-"
-  energy_range: "5-5"
-  file_pattern: "mc_{particle_type}_job_run1_{job_id}_Test_20evt_{particle_type}_{energy_min}_{energy_max}.root"
+  data_directory: "/fs/ddn/sdf/group/atlas/d/liangyu/dSiPM/fasttiming/SPR_data/single_pions/pi-_E5-5_10000_0"
+  file_pattern: "mc_pi-_job_run1_*_Test_20evt_pi-_5_5.root"
   
 # Debug and visualization
 debug:
