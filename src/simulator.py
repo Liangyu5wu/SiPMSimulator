@@ -41,13 +41,14 @@ class SiPMSimulator:
             config (dict): Configuration parameters
         """
         self.config = config
-        self.simp_pulse = None
+        self.sipm_pulse = None
         self.time_axis = None
         self.pulse_interp = None
         self.output_dir = None
         
         # Batch processing parameters
-        self.batch_size = config.get('batch_size', 50)  # Configurable batch size
+        batch_config = config.get('batch_processing', {})
+        self.batch_size = batch_config.get('batch_size', 20)  # Optimized for small ROOT files
         
         # Initialize random number generator
         np.random.seed(42)
@@ -578,7 +579,7 @@ class SiPMSimulator:
         }
         
         output_format = self.config['io']['output_format']
-        waveform_file = Path(self.output_dir) / "waveforms" / f"simp_waveforms.{output_format}"
+        waveform_file = Path(self.output_dir) / "waveforms" / f"sipm_waveforms.{output_format}"
         
         if output_format == 'h5':
             save_waveform_h5(waveforms, self.time_axis, metadata, str(waveform_file),
