@@ -13,7 +13,7 @@ from pathlib import Path
 import h5py
 from tqdm import tqdm
 
-from utils import (
+from .utils import (
     setup_output_directory, save_config, plot_2d_histogram,
     save_waveform_h5, save_waveform_npz, generate_file_list,
     print_simulation_summary
@@ -277,7 +277,7 @@ class SiPMSimulator:
         # 1. Photon position scatter plot
         if len(photon_data['x']) > 0:
             fig, ax = plt.subplots(figsize=(8, 6))
-            scatter = ax.scatter(photon_data['x']/10, photon_data['y']/10, 
+            scatter = ax.scatter(photon_data['x'], photon_data['y'], 
                                c=photon_data['time'], cmap='viridis', alpha=0.7)
             ax.set_xlabel('X Position (cm)')
             ax.set_ylabel('Y Position (cm)')
@@ -287,8 +287,8 @@ class SiPMSimulator:
             # Add SiPM boundary
             x_range = self.config['photon_filter']['x_range']
             y_range = self.config['photon_filter']['y_range']
-            rect = plt.Rectangle((x_range[0]/10, y_range[0]/10), 
-                               (x_range[1]-x_range[0])/10, (y_range[1]-y_range[0])/10,
+            rect = plt.Rectangle((x_range[0], y_range[0]), 
+                               x_range[1]-x_range[0], y_range[1]-y_range[0],
                                fill=False, edgecolor='red', linewidth=2)
             ax.add_patch(rect)
             
