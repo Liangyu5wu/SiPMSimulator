@@ -13,7 +13,7 @@ from pathlib import Path
 import h5py
 from tqdm import tqdm
 
-from utils import (
+from .utils import (
     setup_output_directory, save_config, plot_2d_histogram,
     save_waveform_h5, save_waveform_npz, generate_file_list,
     print_simulation_summary
@@ -277,18 +277,18 @@ class SiPMSimulator:
         # 1. Photon position scatter plot
         if len(photon_data['x']) > 0:
             fig, ax = plt.subplots(figsize=(8, 6))
-            scatter = ax.scatter(photon_data['x'], photon_data['y'], 
+            scatter = ax.scatter(photon_data['x']/10, photon_data['y']/10, 
                                c=photon_data['time'], cmap='viridis', alpha=0.7)
-            ax.set_xlabel('X Position (mm)')
-            ax.set_ylabel('Y Position (mm)')
+            ax.set_xlabel('X Position (cm)')
+            ax.set_ylabel('Y Position (cm)')
             ax.set_title(f'Event {event_id}: Photon Positions (colored by time)')
             plt.colorbar(scatter, label='Time (ns)')
             
             # Add SiPM boundary
             x_range = self.config['photon_filter']['x_range']
             y_range = self.config['photon_filter']['y_range']
-            rect = plt.Rectangle((x_range[0], y_range[0]), 
-                               x_range[1]-x_range[0], y_range[1]-y_range[0],
+            rect = plt.Rectangle((x_range[0]/10, y_range[0]/10), 
+                               (x_range[1]-x_range[0])/10, (y_range[1]-y_range[0])/10,
                                fill=False, edgecolor='red', linewidth=2)
             ax.add_patch(rect)
             
@@ -311,49 +311,21 @@ class SiPMSimulator:
             plt.close()
         
         # 3. Waveform with photon arrival markers
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10))
+        fig, ax = plt.subplots(figsize=(12, 6))
         
-        # Top plot: Clean vs noisy waveform
-        ax1.plot(self.time_axis, waveform_clean, 'b-', linewidth=1.5, label='Clean signal')
-        ax1.plot(self.time_axis, waveform_noisy, 'r-', linewidth=1, alpha=0.8, label='With noise')
+        ax.plot(self.time_axis, waveform_clean, 'b-', linewidth=1.5, label='Clean signal')
+        ax.plot(self.time_axis, waveform_noisy, 'r-', linewidth=1, alpha=0.8, label='With noise')
         
         # Mark photon arrival times with dashed vertical lines
         if len(jittered_times) > 0:
             for t_photon in jittered_times:
-                ax1.axvline(t_photon, color='green', linestyle='--', alpha=0.6, linewidth=1)
+                ax.axvline(t_photon, color='green', linestyle='--', alpha=0.6, linewidth=1)
         
-        ax1.set_ylabel('Amplitude')
-        ax1.set_title(f'Event {event_id}: SiPM Waveform ({len(jittered_times)} detected photons)')
-        ax1.legend()
-        ax1.grid(True, alpha=0.3)
-        
-        # Bottom plot: Zoomed view around signal
-        if len(jittered_times) > 0:
-            t_min = min(jittered_times) - 5
-            t_max = max(jittered_times) + 10
-            mask = (self.time_axis >= t_min) & (self.time_axis <= t_max)
-            
-            ax2.plot(self.time_axis[mask], waveform_clean[mask], 'b-', linewidth=1.5, label='Clean signal')
-            ax2.plot(self.time_axis[mask], waveform_noisy[mask], 'r-', linewidth=1, alpha=0.8, label='With noise')
-            
-            # Mark photon arrivals in zoomed view
-            for t_photon in jittered_times:
-                if t_min <= t_photon <= t_max:
-                    ax2.axvline(t_photon, color='green', linestyle='--', alpha=0.6, linewidth=1)
-            
-            ax2.set_xlim(t_min, t_max)
-        else:
-            # If no detected photons, show a default range
-            t_center = 0
-            mask = (self.time_axis >= t_center-10) & (self.time_axis <= t_center+10)
-            ax2.plot(self.time_axis[mask], waveform_clean[mask], 'b-', linewidth=1.5, label='Clean signal')
-            ax2.plot(self.time_axis[mask], waveform_noisy[mask], 'r-', linewidth=1, alpha=0.8, label='With noise')
-        
-        ax2.set_xlabel('Time (ns)')
-        ax2.set_ylabel('Amplitude')
-        ax2.set_title('Zoomed View')
-        ax2.legend()
-        ax2.grid(True, alpha=0.3)
+        ax.set_xlabel('Time (ns)')
+        ax.set_ylabel('Amplitude')
+        ax.set_title(f'Event {event_id}: SiPM Waveform ({len(jittered_times)} detected photons)')
+        ax.legend()
+        ax.grid(True, alpha=0.3)
         
         plt.tight_layout()
         plt.savefig(event_dir / "waveform.png", dpi=150, bbox_inches='tight')
