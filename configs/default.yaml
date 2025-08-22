@@ -6,6 +6,10 @@ simulation:
   quantum_efficiency: 0.3  # Probability of photon detection (0-1)
   timing_jitter: 0.2  # Gaussian timing uncertainty in ns
 
+# Batch processing optimization
+batch_processing:
+  batch_size: 20  # Number of events to process in each batch (optimized for small ROOT files)
+
 # Photon filtering parameters
 photon_filter:
   x_range: [-4.25, -3.95]  # SiPM active area x-range in cm
