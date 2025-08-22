@@ -34,7 +34,7 @@ io:
 
 # ROOT file processing
 root_files:
-  data_directory: "/fs/ddn/sdf/group/atlas/d/liangyu/dSiPM/fasttiming/SPR_data/single_pions/pi-_E5-5_10000_0"
+  data_directory: "/fs/ddn/sdf/group/atlas/d/liangyu/dSiPM/single_pions/pi-_E5-5_10000_0"
   file_pattern: "mc_pi-_job_run1_*_Test_20evt_pi-_5_5.root"
   
 # Debug and visualization
