@@ -12,8 +12,8 @@ Main Components:
 __version__ = "0.1.0"
 __author__ = "Research Team"
 
-from .simulator import SiPMSimulator
-from .utils import load_config, setup_output_directory
+from simulator import SiPMSimulator
+from utils import load_config, setup_output_directory
 
 __all__ = [
     "SiPMSimulator",
