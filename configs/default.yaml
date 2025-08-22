@@ -2,7 +2,7 @@
 
 # Simulation parameters
 simulation:
-  n_events: 20  # Number of events to process
+  n_events: 1  # Number of events to process
   quantum_efficiency: 0.3  # Probability of photon detection (0-1)
   timing_jitter: 0.2  # Gaussian timing uncertainty in ns
 
@@ -16,7 +16,7 @@ photon_filter:
 # Waveform generation
 waveform:
   time_window: [-30, 50]  # Total time window for waveform in ns
-  time_step: 0.1          # Time sampling in ns
+  time_step: 0.01          # Time sampling in ns
   baseline_range: [-20, -5]  # Time range for noise estimation in ns
 
 # Noise model
@@ -42,5 +42,5 @@ root_files:
 # Debug and visualization
 debug:
   verbose: true
-  plot_individual_events: false
+  plot_individual_events: true
   max_photons_per_event: 10000  # Memory protection
