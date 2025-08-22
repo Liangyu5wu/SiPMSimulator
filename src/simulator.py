@@ -45,12 +45,12 @@ class SiPMSimulator:
         np.random.seed(42)
         
         # Load SiPM pulse shape
-        self._load_simp_pulse()
+        self._load_sipm_pulse()
         
         # Setup time axis for waveforms
         self._setup_time_axis()
     
-    def _load_simp_pulse(self):
+    def _load_sipm_pulse(self):
         """Load SiPM pulse shape from ROOT file"""
         pulse_file = self.config['io']['sipm_pulse_file']
         
@@ -76,7 +76,7 @@ class SiPMSimulator:
                                    bounds_error=False, fill_value=0.0)
         
         # Store pulse for reference
-        self.simp_pulse = {'time': t_pulse, 'amplitude': amplitude}
+        self.sipm_pulse = {'time': t_pulse, 'amplitude': amplitude}
         
         root_file.Close()
         
@@ -219,8 +219,8 @@ class SiPMSimulator:
             float: RMS noise level
         """
         baseline_range = self.config['waveform']['baseline_range']
-        pulse_time = self.simp_pulse['time']
-        pulse_amp = self.simp_pulse['amplitude']
+        pulse_time = self.sipm_pulse['time']
+        pulse_amp = self.sipm_pulse['amplitude']
         
         # Find baseline region
         mask = (pulse_time >= baseline_range[0]) & (pulse_time <= baseline_range[1])
@@ -499,7 +499,7 @@ class SiPMSimulator:
         }
         
         output_format = self.config['io']['output_format']
-        waveform_file = Path(self.output_dir) / "waveforms" / f"simp_waveforms.{output_format}"
+        waveform_file = Path(self.output_dir) / "waveforms" / f"sipm_waveforms.{output_format}"
         
         if output_format == 'h5':
             save_waveform_h5(waveforms, self.time_axis, metadata, str(waveform_file))
