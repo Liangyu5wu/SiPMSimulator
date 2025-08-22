@@ -26,7 +26,7 @@ noise:
 
 # Input/Output settings
 io:
-  sipm_pulse_file: "/fs/ddn/sdf/group/atlas/d/liangyu/dSiPM/SiPM_g2_pulse.root"
+  sipm_pulse_file: "/fs/ddn/sdf/group/atlas/d/liangyu/dSiPM/fasttiming/SPR_data/SiPM_g2_pulse.root"
   output_dir: "../output"
   save_plots: true        # Save 2D histogram plots
   save_metadata: true     # Save run parameters and statistics
