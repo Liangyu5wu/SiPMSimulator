@@ -192,13 +192,12 @@ class SiPMSimulator:
         
         return photon_times + jitter_values
     
-    def _generate_waveform(self, photon_times, event_id=None):
+    def _generate_waveform(self, photon_times):
         """
         Generate SiPM waveform from photon times
         
         Args:
             photon_times (array): Detected photon arrival times
-            event_id (int, optional): Event ID for individual plotting
             
         Returns:
             array: SiPM waveform amplitude vs time
@@ -448,7 +447,7 @@ class SiPMSimulator:
                 jittered_times = self._apply_timing_jitter(detected_times)
                 
                 # Generate waveform
-                waveform = self._generate_waveform(jittered_times, events_processed)
+                waveform = self._generate_waveform(jittered_times)
                 
                 # Add noise
                 waveform_with_noise = self._add_noise(waveform)
