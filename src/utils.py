@@ -106,20 +106,36 @@ def plot_2d_histogram(x_data, y_data, x_bins, y_bins, title, output_path=None):
     return hist, xedges, yedges
 
 
-def save_waveform_h5(waveforms, time_axis, metadata, output_path):
+def save_waveform_h5(waveforms, time_axis, metadata, output_path, 
+                    photon_times_original=None, photon_times_jittered=None,
+                    photon_times_detected=None, photon_times_detected_jittered=None):
     """
-    Save waveforms to HDF5 file
+    Save waveforms and photon times to HDF5 file
     
     Args:
         waveforms (array): Waveform data (n_events, n_time_points)
         time_axis (array): Time axis in ns
         metadata (dict): Metadata dictionary
         output_path (str): Output file path
+        photon_times_original (array, optional): Original photon times (n_events, 100)
+        photon_times_jittered (array, optional): Original photon times with jitter (n_events, 100)
+        photon_times_detected (array, optional): QE filtered photon times (n_events, 100)
+        photon_times_detected_jittered (array, optional): QE filtered + jitter (n_events, 100)
     """
     with h5py.File(output_path, 'w') as f:
         # Save waveform data
         f.create_dataset('waveforms', data=waveforms, compression='gzip')
         f.create_dataset('time_axis', data=time_axis)
+        
+        # Save photon time arrays if provided
+        if photon_times_original is not None:
+            f.create_dataset('photon_times_original', data=photon_times_original, compression='gzip')
+        if photon_times_jittered is not None:
+            f.create_dataset('photon_times_jittered', data=photon_times_jittered, compression='gzip')
+        if photon_times_detected is not None:
+            f.create_dataset('photon_times_detected', data=photon_times_detected, compression='gzip')
+        if photon_times_detected_jittered is not None:
+            f.create_dataset('photon_times_detected_jittered', data=photon_times_detected_jittered, compression='gzip')
         
         # Save metadata
         meta_group = f.create_group('metadata')
