@@ -102,7 +102,6 @@ def plot_2d_histogram(x_data, y_data, x_bins, y_bins, title, output_path=None):
         plt.savefig(output_path, dpi=150, bbox_inches='tight')
         print(f"Plot saved to: {output_path}")
     
-    plt.show()
     
     return hist, xedges, yedges
 
