@@ -1,0 +1,46 @@
+# SiPM Simulator Default Configuration
+
+# Simulation parameters
+simulation:
+  n_events: 20  # Number of events to process
+  quantum_efficiency: 0.3  # Probability of photon detection (0-1)
+  timing_jitter: 0.2  # Gaussian timing uncertainty in ns
+
+# Photon filtering parameters
+photon_filter:
+  x_range: [-4.25, 3.95]  # SiPM active area x-range in mm
+  y_range: [4.32, 4.62]   # SiPM active area y-range in mm
+  z_min: 80.0             # Minimum z position for photon detection
+  require_core_c: true    # Only process Cherenkov core photons (OP_isCoreC==1)
+
+# Waveform generation
+waveform:
+  time_window: [-30, 50]  # Total time window for waveform in ns
+  time_step: 0.1          # Time sampling in ns
+  baseline_range: [-20, -5]  # Time range for noise estimation in ns
+
+# Noise model
+noise:
+  enable_background: true  # Add Gaussian background noise
+  noise_scale: 1.0        # Scale factor for baseline noise level
+
+# Input/Output settings
+io:
+  sipm_pulse_file: "/fs/ddn/sdf/group/atlas/d/liangyu/dSiPM/fasttiming/SPR_data/SiPM_g2_pulse.root"
+  output_dir: "../output"
+  save_plots: true        # Save 2D histogram plots
+  save_metadata: true     # Save run parameters and statistics
+  output_format: "h5"     # Output format: "h5" or "npz"
+
+# ROOT file processing
+root_files:
+  base_path: "/fs/ddn/sdf/group/atlas/d/liangyu/dSiPM/fasttiming/SPR_data/single_pions"
+  particle_type: "pi-"
+  energy_range: "5-5"
+  file_pattern: "mc_{particle_type}_job_run1_{job_id}_Test_20evt_{particle_type}_{energy_min}_{energy_max}.root"
+  
+# Debug and visualization
+debug:
+  verbose: true
+  plot_individual_events: false
+  max_photons_per_event: 10000  # Memory protection
