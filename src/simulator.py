@@ -432,6 +432,7 @@ class SiPMSimulator:
                     )
                 
                 all_waveforms.append(waveform_with_noise)
+                print(f"Added waveform {events_processed}, max value: {np.max(waveform_with_noise)}")
                 
                 total_photons += n_photons
                 events_processed += 1
@@ -440,7 +441,12 @@ class SiPMSimulator:
                     print(f"Processed {events_processed} events")
             
             root_file.Close()
-        
+
+
+        print(f"Number of waveforms to save: {len(all_waveforms)}")
+        if len(all_waveforms) > 0:
+            print(f"First waveform max: {np.max(all_waveforms[0])}")
+            print(f"First waveform sum: {np.sum(all_waveforms[0])}")
         # Convert to numpy arrays
         waveforms = np.array(all_waveforms)
         
