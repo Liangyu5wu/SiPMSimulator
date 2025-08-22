@@ -13,7 +13,7 @@ from pathlib import Path
 import h5py
 from tqdm import tqdm
 
-from .utils import (
+from utils import (
     setup_output_directory, save_config, plot_2d_histogram,
     save_waveform_h5, save_waveform_npz, generate_file_list,
     print_simulation_summary
