@@ -257,6 +257,24 @@ class SiPMSimulator:
         
         return waveform + noise
     
+    def _pad_photon_times(self, times_array, max_length=100):
+        """
+        Pad photon times array to fixed length with NaN
+        
+        Args:
+            times_array (array): Photon times
+            max_length (int): Maximum array length
+            
+        Returns:
+            array: Padded array of length max_length
+        """
+        if len(times_array) >= max_length:
+            return times_array[:max_length]
+        else:
+            padded = np.full(max_length, np.nan)
+            padded[:len(times_array)] = times_array
+            return padded
+    
     def _plot_individual_event(self, event_id, photon_data, detected_times, 
                               jittered_times, waveform_clean, waveform_noisy):
         """
@@ -361,6 +379,10 @@ class SiPMSimulator:
         # Storage for results
         all_waveforms = []
         all_photon_data = {'x': [], 'y': [], 'event_id': []}
+        all_photon_times_original = []
+        all_photon_times_jittered = []
+        all_photon_times_detected = []
+        all_photon_times_detected_jittered = []
         total_photons = 0
         events_processed = 0
         
@@ -404,6 +426,9 @@ class SiPMSimulator:
                 all_photon_data['y'].extend(photon_data['y'])
                 all_photon_data['event_id'].extend([events_processed] * n_photons)
                 
+                # Apply timing jitter to original photons
+                original_jittered = self._apply_timing_jitter(photon_data['time'])
+                
                 # Apply quantum efficiency
                 detected_times = self._apply_quantum_efficiency(photon_data['time'])
                 n_detected = len(detected_times)
@@ -411,12 +436,23 @@ class SiPMSimulator:
                 if n_detected == 0:
                     if self.config['debug']['verbose']:
                         print(f"Event {events_processed}: No photons detected after QE")
+                    # Pad empty arrays for events with no detected photons
+                    all_photon_times_original.append(self._pad_photon_times(photon_data['time']))
+                    all_photon_times_jittered.append(self._pad_photon_times(original_jittered))
+                    all_photon_times_detected.append(self._pad_photon_times(np.array([])))
+                    all_photon_times_detected_jittered.append(self._pad_photon_times(np.array([])))
                     all_waveforms.append(np.zeros(len(self.time_axis)))
                     events_processed += 1
                     continue
                 
-                # Apply timing jitter
+                # Apply timing jitter to detected photons
                 jittered_times = self._apply_timing_jitter(detected_times)
+                
+                # Store photon times (padded to length 100)
+                all_photon_times_original.append(self._pad_photon_times(photon_data['time']))
+                all_photon_times_jittered.append(self._pad_photon_times(original_jittered))
+                all_photon_times_detected.append(self._pad_photon_times(detected_times))
+                all_photon_times_detected_jittered.append(self._pad_photon_times(jittered_times))
                 
                 # Generate waveform
                 waveform = self._generate_waveform(jittered_times)
@@ -432,7 +468,6 @@ class SiPMSimulator:
                     )
                 
                 all_waveforms.append(waveform_with_noise)
-                print(f"Added waveform {events_processed}, max value: {np.max(waveform_with_noise)}")
                 
                 total_photons += n_photons
                 events_processed += 1
@@ -441,14 +476,13 @@ class SiPMSimulator:
                     print(f"Processed {events_processed} events")
             
             root_file.Close()
-
-
-        print(f"Number of waveforms to save: {len(all_waveforms)}")
-        if len(all_waveforms) > 0:
-            print(f"First waveform max: {np.max(all_waveforms[0])}")
-            print(f"First waveform sum: {np.sum(all_waveforms[0])}")
+        
         # Convert to numpy arrays
         waveforms = np.array(all_waveforms)
+        photon_times_original = np.array(all_photon_times_original)
+        photon_times_jittered = np.array(all_photon_times_jittered)
+        photon_times_detected = np.array(all_photon_times_detected)
+        photon_times_detected_jittered = np.array(all_photon_times_detected_jittered)
         
         # Create and save 2D histogram
         if self.config['io']['save_plots'] and len(all_photon_data['x']) > 0:
@@ -478,14 +512,11 @@ class SiPMSimulator:
         
         output_format = self.config['io']['output_format']
         waveform_file = Path(self.output_dir) / "waveforms" / f"sipm_waveforms.{output_format}"
-
-        print(f"Saving to: {waveform_file}")
-        print(f"Output format: {output_format}")
-        print(f"Waveforms directory exists: {(Path(self.output_dir) / 'waveforms').exists()}")
         
         if output_format == 'h5':
-            save_waveform_h5(waveforms, self.time_axis, metadata, str(waveform_file))
-            print(f"save_waveform_h5 completed")
+            save_waveform_h5(waveforms, self.time_axis, metadata, str(waveform_file),
+                            photon_times_original, photon_times_jittered,
+                            photon_times_detected, photon_times_detected_jittered)
         else:
             save_waveform_npz(waveforms, self.time_axis, metadata, str(waveform_file))
         
