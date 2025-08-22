@@ -77,14 +77,28 @@ def plot_2d_histogram(x_data, y_data, x_bins, y_bins, title, output_path=None):
     """
     fig, ax = plt.subplots(figsize=(10, 8))
     
-    hist, xedges, yedges = np.histogram2d(x_data, y_data, bins=[x_bins, y_bins])
+    # Convert coordinates to cm
+    x_data_cm = np.array(x_data) / 10
+    y_data_cm = np.array(y_data) / 10
+    x_bins_cm = x_bins / 10
+    y_bins_cm = y_bins / 10
     
-    im = ax.imshow(hist.T, origin='lower', aspect='auto',
-                   extent=[x_bins[0], x_bins[-1], y_bins[0], y_bins[-1]],
-                   cmap='viridis')
+    hist, xedges, yedges = np.histogram2d(x_data_cm, y_data_cm, bins=[x_bins_cm, y_bins_cm])
     
-    ax.set_xlabel('X Position (mm)')
-    ax.set_ylabel('Y Position (mm)')
+    # Create colormap with white background
+    import matplotlib.colors as colors
+    cmap = plt.cm.viridis.copy()
+    cmap.set_bad('white')
+    
+    # Mask zero values to show as white
+    hist_masked = np.ma.masked_where(hist == 0, hist)
+    
+    im = ax.imshow(hist_masked.T, origin='lower', aspect='auto',
+                   extent=[x_bins_cm[0], x_bins_cm[-1], y_bins_cm[0], y_bins_cm[-1]],
+                   cmap=cmap)
+    
+    ax.set_xlabel('X Position (cm)')
+    ax.set_ylabel('Y Position (cm)')
     ax.set_title(title)
     
     plt.colorbar(im, ax=ax, label='Photon Count')
