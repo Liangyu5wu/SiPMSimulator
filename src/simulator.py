@@ -478,9 +478,14 @@ class SiPMSimulator:
         
         output_format = self.config['io']['output_format']
         waveform_file = Path(self.output_dir) / "waveforms" / f"sipm_waveforms.{output_format}"
+
+        print(f"Saving to: {waveform_file}")
+        print(f"Output format: {output_format}")
+        print(f"Waveforms directory exists: {(Path(self.output_dir) / 'waveforms').exists()}")
         
         if output_format == 'h5':
             save_waveform_h5(waveforms, self.time_axis, metadata, str(waveform_file))
+            print(f"save_waveform_h5 completed")
         else:
             save_waveform_npz(waveforms, self.time_axis, metadata, str(waveform_file))
         
