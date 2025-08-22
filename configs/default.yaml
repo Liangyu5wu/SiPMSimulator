@@ -8,7 +8,7 @@ simulation:
 
 # Photon filtering parameters
 photon_filter:
-  x_range: [-4.25, 3.95]  # SiPM active area x-range in cm
+  x_range: [-4.25, -3.95]  # SiPM active area x-range in cm
   y_range: [4.32, 4.62]   # SiPM active area y-range in cm
   z_min: 80               # Minimum z position for photon detection in cm
   require_core_c: true      # Only process Cherenkov core photons (OP_isCoreC==1)
@@ -34,8 +34,8 @@ io:
 
 # ROOT file processing
 root_files:
-  data_directory: "/fs/ddn/sdf/group/atlas/d/liangyu/dSiPM/single_pions/pi-_E5-5_10000_0"
-  file_pattern: "mc_pi-_job_run1_*_Test_20evt_pi-_5_5.root"
+  data_directory: "/fs/ddn/sdf/group/atlas/d/liangyu/dSiPM/cs231n/rootdata/testdata/pi-_E90-90_1000_0"
+  file_pattern: "mc_pi-_job_run1_*_Test_10evt_pi-_90_90.root"
   
 # Debug and visualization
 debug:
