@@ -3,7 +3,7 @@
 # Simulation parameters
 simulation:
   n_events: 1  # Number of events to process
-  quantum_efficiency: 0.3  # Probability of photon detection (0-1)
+  quantum_efficiency: 1.0  # Probability of photon detection (0-1)
   timing_jitter: 0.2  # Gaussian timing uncertainty in ns
 
 # Photon filtering parameters
