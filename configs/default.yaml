@@ -41,4 +41,4 @@ root_files:
 debug:
   verbose: true
   plot_individual_events: false
-  max_photons_per_event: 10000  # Memory protection
+  max_photons_per_event: 10000000  # Memory protection
