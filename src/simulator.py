@@ -207,10 +207,18 @@ class SiPMSimulator:
         """
         waveform = np.zeros(len(self.time_axis))
         
+        # Get original pulse data
+        pulse_time = self.sipm_pulse['time']
+        pulse_amp = self.sipm_pulse['amplitude']
+        
         for t_photon in photon_times:
-            # Shift pulse to photon arrival time
-            pulse_amplitude = self.pulse_interp(self.time_axis - t_photon)
-            waveform += pulse_amplitude
+            # Shift pulse time axis to photon arrival time
+            shifted_time = pulse_time + t_photon
+            
+            # Interpolate onto output time grid
+            shifted_pulse = np.interp(self.time_axis, shifted_time, pulse_amp, 
+                                    left=0, right=0)
+            waveform += shifted_pulse
         
         return waveform
     
