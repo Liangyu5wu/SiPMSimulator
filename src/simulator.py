@@ -1,8 +1,12 @@
 """
-SiPM Simulator Main Class
+SiPM Simulator Main Class - Optimized Production Version
 
 Simulates Silicon Photomultiplier response to optical photons from 
 particle physics experiments using ROOT data input.
+
+Optimizations:
+- Branch activation for faster ROOT I/O
+- Efficient numpy array conversion from ROOT vectors
 """
 
 import ROOT
@@ -22,7 +26,7 @@ from utils import (
 
 class SiPMSimulator:
     """
-    Main SiPM simulation class
+    Main SiPM simulation class with performance optimizations
     
     Processes ROOT files containing optical photon data and simulates
     SiPM response including quantum efficiency, timing jitter, and noise.
@@ -96,6 +100,31 @@ class SiPMSimulator:
         if self.config['debug']['verbose']:
             print(f"Waveform time axis: {len(self.time_axis)} points from {time_window[0]} to {time_window[1]} ns")
     
+    def _setup_tree_branches(self, tree):
+        """
+        Only activate needed branches to improve reading efficiency
+        
+        Args:
+            tree: ROOT tree object
+        """
+        # Disable all branches
+        tree.SetBranchStatus("*", 0)
+        
+        # Only activate needed branches
+        needed_branches = [
+            "OP_pos_final_x",
+            "OP_pos_final_y", 
+            "OP_pos_final_z",
+            "OP_time_final",
+            "OP_isCoreC"
+        ]
+        
+        for branch in needed_branches:
+            tree.SetBranchStatus(branch, 1)
+        
+        if self.config['debug']['verbose']:
+            print(f"Activated {len(needed_branches)} branches for optimized reading")
+    
     def _filter_photons(self, tree, event_idx):
         """
         Filter photons based on position and type criteria
@@ -115,12 +144,12 @@ class SiPMSimulator:
         if n_photons == 0:
             return {'x': np.array([]), 'y': np.array([]), 'z': np.array([]), 'time': np.array([])}
         
-        # Convert to numpy arrays
-        x = np.array([tree.OP_pos_final_x[i] for i in range(n_photons)])
-        y = np.array([tree.OP_pos_final_y[i] for i in range(n_photons)])
-        z = np.array([tree.OP_pos_final_z[i] for i in range(n_photons)])
-        time = np.array([tree.OP_time_final[i] for i in range(n_photons)])
-        is_core_c = np.array([tree.OP_isCoreC[i] for i in range(n_photons)])
+        # Optimized array conversion: direct numpy conversion from ROOT vectors
+        x = np.array(tree.OP_pos_final_x, dtype=np.float64)
+        y = np.array(tree.OP_pos_final_y, dtype=np.float64)
+        z = np.array(tree.OP_pos_final_z, dtype=np.float64)
+        time = np.array(tree.OP_time_final, dtype=np.float64)
+        is_core_c = np.array(tree.OP_isCoreC, dtype=np.int32)
         
         # Apply filters
         filter_config = self.config['photon_filter']
@@ -130,7 +159,7 @@ class SiPMSimulator:
         
         # Core Cherenkov filter
         if filter_config['require_core_c']:
-            mask &= is_core_c
+            mask &= is_core_c.astype(bool)
         
         # X position filter
         x_range = filter_config['x_range']
@@ -414,6 +443,9 @@ class SiPMSimulator:
                 root_file.Close()
                 continue
             
+            # Optimize ROOT I/O by activating only needed branches
+            self._setup_tree_branches(tree)
+            
             # Process events in this file
             n_events_in_file = tree.GetEntries()
             
@@ -421,7 +453,7 @@ class SiPMSimulator:
                 if events_processed >= n_events_to_process:
                     break
                 
-                # Filter photons
+                # Filter photons (includes optimized array conversion)
                 photon_data = self._filter_photons(tree, event_idx)
                 n_photons = len(photon_data['time'])
                 
