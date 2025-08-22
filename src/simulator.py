@@ -49,6 +49,9 @@ class SiPMSimulator:
         
         # Setup time axis for waveforms
         self._setup_time_axis()
+        
+        # Calculate noise RMS once during initialization
+        self.noise_rms = self._estimate_noise_level()
     
     def _load_sipm_pulse(self):
         """Load SiPM pulse shape from ROOT file"""
@@ -250,10 +253,9 @@ class SiPMSimulator:
         if not self.config['noise']['enable_background']:
             return waveform
         
-        noise_rms = self._estimate_noise_level()
         noise_scale = self.config['noise']['noise_scale']
         
-        noise = np.random.normal(0, noise_rms * noise_scale, len(waveform))
+        noise = np.random.normal(0, self.noise_rms * noise_scale, len(waveform))
         
         return waveform + noise
     
