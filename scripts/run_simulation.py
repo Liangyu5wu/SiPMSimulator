@@ -96,7 +96,7 @@ def validate_config(config):
         return False
     
     # Check ROOT files base path exists
-    root_base = config['root_files']['base_path']
+    root_base = config['root_files']['data_directory']
     if not Path(root_base).exists():
         print(f"Error: ROOT files base path not found: {root_base}")
         return False
