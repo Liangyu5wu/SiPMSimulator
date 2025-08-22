@@ -52,7 +52,7 @@ class SiPMSimulator:
     
     def _load_simp_pulse(self):
         """Load SiPM pulse shape from ROOT file"""
-        pulse_file = self.config['io']['simp_pulse_file']
+        pulse_file = self.config['io']['sipm_pulse_file']
         
         if not Path(pulse_file).exists():
             raise FileNotFoundError(f"SiPM pulse file not found: {pulse_file}")
