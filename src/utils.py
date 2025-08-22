@@ -156,30 +156,12 @@ def generate_file_list(config):
         list: List of ROOT file paths
     """
     root_config = config['root_files']
-    base_path = Path(root_config['base_path'])
-    
-    particle_type = root_config['particle_type']
-    energy_range = root_config['energy_range']
-    
-    # Parse energy range
-    energy_parts = energy_range.split('-')
-    energy_min, energy_max = energy_parts[0], energy_parts[1]
-    
-    # Construct directory path
-    subdir = f"{particle_type}_E{energy_range}_{config['simulation']['n_events']}_0"
-    file_dir = base_path / subdir
+    file_dir = Path(root_config['data_directory'])
     
     if not file_dir.exists():
         raise FileNotFoundError(f"Directory not found: {file_dir}")
     
-    # Find all matching ROOT files
-    pattern = root_config['file_pattern'].format(
-        particle_type=particle_type,
-        job_id="*",
-        energy_min=energy_min,
-        energy_max=energy_max
-    )
-    
+    pattern = root_config['file_pattern']
     file_list = list(file_dir.glob(pattern))
     
     if not file_list:
