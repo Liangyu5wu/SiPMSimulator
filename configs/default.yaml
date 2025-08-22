@@ -15,7 +15,7 @@ photon_filter:
 
 # Waveform generation
 waveform:
-  time_window: [-30, 50]  # Total time window for waveform in ns
+  time_window: [-1, 50]  # Total time window for waveform in ns
   time_step: 0.05          # Time sampling in ns
   baseline_range: [-20, -5]  # Time range for noise estimation in ns
 
