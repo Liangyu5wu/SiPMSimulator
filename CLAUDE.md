@@ -39,9 +39,9 @@ python scripts/merge_scan_results.py --format npz       # NPZ format (smaller, f
 python scripts/merge_scan_results.py --waveforms-only   # Waveforms+time+photon_times (60% smaller)
 python scripts/merge_scan_results.py --format split --chunk-size 5000 # Split into 5k-event chunks
 
-# Inspect merged results
-python scripts/inspect_merged_data.py                   # Default: check ../output/merged_scan_results.npz
-python scripts/inspect_merged_data.py path/to/file.h5   # Inspect specific file
+# Inspect merged results or ML datasets
+python scripts/inspect_merged_data.py                   # Auto-detect and inspect available files
+python scripts/inspect_merged_data.py path/to/file.npz  # Inspect specific file
 
 # Create ML dataset (filtered and cleaned for training)
 python scripts/create_ml_dataset.py                     # Filter out-of-window photons and high-photon events

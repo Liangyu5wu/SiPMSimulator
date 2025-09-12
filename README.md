@@ -23,19 +23,25 @@ SiPMSimulator/
 ├── src/                    # Core simulation code
 │   ├── simulator.py        # Main SiPM simulation engine
 │   ├── utils.py            # Utility functions
-│   └── init.py
-├── scripts/                # Executable scripts
+│   └── __init__.py
+├── scripts/                # Data processing scripts
 │   ├── run_simulation.py   # Main simulation runner
-│   └── make_spline.py      # Pulse shape creator
+│   ├── make_spline.py      # Pulse shape creator
+│   ├── merge_scan_results.py    # Merge position scan results
+│   ├── inspect_merged_data.py   # Inspect datasets (merged/ML)
+│   └── create_ml_dataset.py     # Create ML training datasets
+├── ml_training/            # Machine learning code
+│   └── dataset_analysis.ipynb  # Dataset analysis notebook
 ├── configs/                # Configuration files
 │   └── default.yaml        # Default simulation parameters
 ├── jobs/                   # SLURM job scripts
-│   └── sipm_sim.sh         # Cluster job submission
+│   ├── sipm_sim.sh         # Single position job
+│   └── position_scan.sh    # Multi-position scanning
 ├── requirements.txt        # Python dependencies
 └── setup.sh                # Environment setup
 
 External directories:
-├── ../output/              # Simulation results (timestamped runs)
+├── ../output/              # Simulation results and datasets
 ├── ../logs/                # Log files for cluster jobs  
 └── ../SPR_data/            # Pulse shape data files
 ```
@@ -141,19 +147,19 @@ python scripts/merge_scan_results.py --format split --chunk-size 5000  # Custom 
 - **Chunked output**: Split large datasets into manageable file sizes
 - **Compression**: Uses gzip compression for all formats
 
-### Inspecting Merged Data
+### Inspecting Data
 
-Check the contents and structure of merged files:
+Check the contents and structure of merged results or ML datasets:
 
 ```bash
-# Inspect default merged file
+# Auto-detect and inspect available files
 python scripts/inspect_merged_data.py
 
 # Inspect specific file
 python scripts/inspect_merged_data.py ../output/my_data.npz
 ```
 
-Shows file size, data arrays, dimensions, and basic statistics.
+Shows file size, data arrays, dimensions, and statistics for both merged scan results and ML training datasets.
 
 ### Creating ML Training Dataset
 

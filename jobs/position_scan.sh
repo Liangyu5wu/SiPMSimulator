@@ -86,13 +86,13 @@ for i, x_min in enumerate(x_bounds):
         # Create individual SLURM job script
         job_script = f'''#!/bin/bash
 #SBATCH --account=atlas:default
-#SBATCH --partition=roma
+#SBATCH --partition=milano
 #SBATCH --job-name=sipm_scan_{job_num:03d}
 #SBATCH --output=../logs/output_sipm_scan_{job_num:03d}-%j.txt
 #SBATCH --error=../logs/error_sipm_scan_{job_num:03d}-%j.txt
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=4g
+#SBATCH --mem-per-cpu=3g
 #SBATCH --time=02:00:00
 
 export SCAN_X_MIN={x_min:.3f}
