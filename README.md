@@ -102,3 +102,37 @@ The simulation implements realistic SiPM response modeling:
 6. **Output Generation**: Produces time-domain waveforms with metadata
 
 Results are saved in timestamped directories under `../output/run_YYYYMMDD_HHMMSS/` containing waveforms, plots, and metadata.
+
+## Output Data Format
+
+### SiPM Waveforms File (`sipm_waveforms.h5`)
+
+The main simulation output is an HDF5 file containing:
+
+**Primary Data:**
+- **`waveforms`**: SiPM response waveforms (n_events × n_time_points) with realistic noise
+- **`time_axis`**: Corresponding time axis in nanoseconds
+
+**Photon Timing Data** (all arrays: n_events × 100 with NaN padding):
+- **`photon_times_original`**: Raw photon arrival times from ROOT files
+- **`photon_times_jittered`**: Original times with timing jitter applied
+- **`photon_times_detected`**: Times after quantum efficiency filtering  
+- **`photon_times_detected_jittered`**: Final detected times used for waveform generation
+
+**Simulation Metadata:**
+- Run parameters (quantum efficiency, timing jitter, time step)
+- Event statistics (total events, total photons processed)
+- Configuration settings (baseline range, etc.)
+
+**Usage Example:**
+```python
+import h5py
+import numpy as np
+
+# Load simulation results
+with h5py.File('sipm_waveforms.h5', 'r') as f:
+    waveforms = f['waveforms'][:]  # Shape: (n_events, n_time_points)
+    time_axis = f['time_axis'][:]   # Time in ns
+    n_events = f['metadata'].attrs['n_events']
+    quantum_eff = f['metadata'].attrs['quantum_efficiency']
+```

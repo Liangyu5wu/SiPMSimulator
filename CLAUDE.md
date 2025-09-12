@@ -90,6 +90,31 @@ output/run_YYYYMMDD_HHMMSS/
 └── metadata/      # Configuration and simulation statistics
 ```
 
+### SiPM Waveforms HDF5 File Structure
+
+The main output file `sipm_waveforms.h5` contains:
+
+**Datasets:**
+- `waveforms` (n_events × n_time_points): SiPM response waveforms with noise, gzip compressed
+- `time_axis` (n_time_points,): Time axis in nanoseconds
+- `photon_times_original` (n_events × 100): Original photon arrival times, padded/truncated to 100, gzip compressed
+- `photon_times_jittered` (n_events × 100): Original photon times with timing jitter applied, gzip compressed  
+- `photon_times_detected` (n_events × 100): Photon times after quantum efficiency filtering, gzip compressed
+- `photon_times_detected_jittered` (n_events × 100): Final detected photon times with jitter, gzip compressed
+
+**Metadata Group:**
+- `n_events`: Number of processed events
+- `total_photons`: Total photons processed across all events
+- `quantum_efficiency`: QE value used in simulation
+- `timing_jitter`: Timing jitter sigma in ns
+- `time_step`: Waveform sampling time step in ns
+- `baseline_range`: Time range used for noise estimation
+
+**Data Types:**
+- All photon time arrays use NaN padding for events with <100 photons
+- Waveforms are float64 arrays with time-domain voltage response
+- Time axis matches waveform sampling (typically 0.05ns steps)
+
 ### Environment Dependencies
 
 Requires ROOT framework (loaded via `/cvmfs/sft.cern.ch/lcg/views/LCG_106/x86_64-el8-gcc11-opt/setup.sh`) and Python packages listed in `requirements.txt`. Uses UV for fast Python package management.
