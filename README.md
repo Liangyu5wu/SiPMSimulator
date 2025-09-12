@@ -119,9 +119,10 @@ The position scan automatically:
 
 Edit `configs/default.yaml` to adjust:
 - Number of events to process
-- Quantum efficiency (default: 30%)
+- Quantum efficiency (default: 40%)
 - Timing jitter (default: 0.2 ns)
 - SiPM active area (default: x[-4.25,-3.95], y[4.32,4.62])
+- Baseline range for noise estimation (default: [-15,-3] ns)
 - Output directory and format
 
 ## Physics
@@ -135,7 +136,11 @@ The simulation implements realistic SiPM response modeling:
 5. **Noise Addition**: Adds realistic Gaussian background noise
 6. **Output Generation**: Produces time-domain waveforms with metadata
 
-Results are saved in timestamped directories under `../output/run_YYYYMMDD_HHMMSS/` containing waveforms, plots, and metadata.
+Results are saved in descriptive directories:
+- **Position scans**: `../output/run_YYYYMMDD_xNaNbtoNcNd_yNaNbtoNcNd/` (e.g., `run_20250912_xn6p65ton1p85_y1p12to5p92`)
+- **Regular runs**: `../output/run_YYYYMMDD_HHMMSS/` 
+
+Each directory contains waveforms, plots, and metadata. The position scan naming convention uses 'n' for negative signs and 'p' for decimal points to ensure filesystem compatibility.
 
 ## Output Data Format
 

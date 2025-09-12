@@ -400,7 +400,7 @@ class SiPMSimulator:
         """
         # Setup output directory
         base_output = self.config['io']['output_dir']
-        self.output_dir = setup_output_directory(base_output)
+        self.output_dir = setup_output_directory(base_output, self.config)
         save_config(self.config, self.output_dir)
         
         # Get ROOT file list

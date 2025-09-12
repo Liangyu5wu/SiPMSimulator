@@ -26,18 +26,32 @@ def load_config(config_path):
     return config
 
 
-def setup_output_directory(base_dir):
+def setup_output_directory(base_dir, config=None):
     """
-    Create timestamped output directory structure
+    Create output directory structure with position-based naming for scans
     
     Args:
         base_dir (str): Base output directory path
+        config (dict, optional): Configuration with photon_filter ranges
         
     Returns:
         str: Path to created run directory
     """
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    run_dir = Path(base_dir) / f"run_{timestamp}"
+    date_str = datetime.now().strftime("%Y%m%d")
+    
+    # Check if this is a position scan with specific x,y ranges
+    if config and 'photon_filter' in config:
+        x_range = config['photon_filter']['x_range']
+        y_range = config['photon_filter']['y_range']
+        
+        # Format ranges for directory name (remove brackets, spaces)
+        x_str = f"x{x_range[0]:.2f}to{x_range[1]:.2f}".replace('-', 'n').replace('.', 'p')
+        y_str = f"y{y_range[0]:.2f}to{y_range[1]:.2f}".replace('-', 'n').replace('.', 'p')
+        run_dir = Path(base_dir) / f"run_{date_str}_{x_str}_{y_str}"
+    else:
+        # Fallback to timestamp for non-scan runs
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        run_dir = Path(base_dir) / f"run_{timestamp}"
     
     # Create subdirectories
     (run_dir / "waveforms").mkdir(parents=True, exist_ok=True)

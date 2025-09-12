@@ -76,9 +76,9 @@ Typical performance: 2-3 seconds for 10 events (vs 60+ seconds in original imple
 
 ### Configuration Structure
 
-- `simulation`: Core simulation parameters (events, quantum efficiency, timing jitter)
+- `simulation`: Core simulation parameters (events, quantum efficiency=0.4, timing jitter)
 - `photon_filter`: SiPM active area and photon selection criteria
-- `waveform`: Time window, sampling, and baseline parameters
+- `waveform`: Time window, sampling, and baseline parameters (baseline_range=[-15,-3])
 - `noise`: Background noise modeling settings
 - `io`: File paths, output formats, and save options
 - `root_files`: ROOT file directory and pattern matching
@@ -86,13 +86,28 @@ Typical performance: 2-3 seconds for 10 events (vs 60+ seconds in original imple
 
 ### Output Structure
 
-Results are saved in timestamped directories:
+Results are saved in directories with descriptive naming:
+
+**Position Scanning:**
+```
+output/run_YYYYMMDD_xNaNbtoNcNd_yNaNbtoNcNd/
+├── waveforms/     # SiPM waveform data (H5/NPZ)
+├── plots/         # 2D photon distribution histograms
+└── metadata/      # Configuration and simulation statistics
+```
+
+**Regular Runs:**
 ```
 output/run_YYYYMMDD_HHMMSS/
 ├── waveforms/     # SiPM waveform data (H5/NPZ)
 ├── plots/         # 2D photon distribution histograms
 └── metadata/      # Configuration and simulation statistics
 ```
+
+Directory naming convention for position scans:
+- Date format: YYYYMMDD  
+- Coordinate format: 'n' = negative sign, 'p' = decimal point
+- Example: `run_20250912_xn6p65ton1p85_y1p12to5p92` represents x[-6.65,-1.85], y[1.12,5.92]
 
 ### SiPM Waveforms HDF5 File Structure
 
