@@ -155,6 +155,29 @@ python scripts/inspect_merged_data.py ../output/my_data.npz
 
 Shows file size, data arrays, dimensions, and basic statistics.
 
+### Creating ML Training Dataset
+
+Generate a clean, filtered dataset optimized for machine learning:
+
+```bash
+# Create filtered ML dataset from merged results
+python scripts/create_ml_dataset.py
+
+# Custom photon count threshold (default: <95 photons per event)
+python scripts/create_ml_dataset.py --max-photons 80
+```
+
+**Dataset Preparation Workflow:**
+1. **Position Scanning**: Run parallel SLURM jobs → Individual region results
+2. **Data Merging**: Combine all regions → Single consolidated file  
+3. **ML Filtering**: Remove outliers and out-of-window photons → Clean training dataset
+
+**Filtering Steps:**
+- Remove photons outside waveform time window ([-1, 50] ns)
+- Filter events with excessive photon counts (≥95 photons) to remove anomalies
+- Preserve only essential data: `waveforms`, `time_axis`, `photon_times_detected_jittered`
+- Generate clean, ready-to-use ML training data
+
 ## Configuration
 
 Edit `configs/default.yaml` to adjust:

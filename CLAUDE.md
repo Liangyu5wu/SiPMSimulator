@@ -42,6 +42,10 @@ python scripts/merge_scan_results.py --format split --chunk-size 5000 # Split in
 # Inspect merged results
 python scripts/inspect_merged_data.py                   # Default: check ../output/merged_scan_results.npz
 python scripts/inspect_merged_data.py path/to/file.h5   # Inspect specific file
+
+# Create ML dataset (filtered and cleaned for training)
+python scripts/create_ml_dataset.py                     # Filter out-of-window photons and high-photon events
+python scripts/create_ml_dataset.py --max-photons 80    # Custom photon count threshold
 ```
 
 ### Pulse Shape Creation
