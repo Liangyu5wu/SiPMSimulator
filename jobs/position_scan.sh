@@ -75,9 +75,9 @@ for i, x in enumerate(x_positions):
         pos_num = i * len(y_positions) + j + 1
         print(f'Position {pos_num}/{total}: center=({x:.2f}, {y:.2f})')
         
-        # Calculate bounds
-        x_min, x_max = x - $SIPM_HALF_SIZE, x + $SIPM_HALF_SIZE
-        y_min, y_max = y - $SIPM_HALF_SIZE, y + $SIPM_HALF_SIZE
+        # Calculate bounds and convert to native Python float
+        x_min, x_max = float(x - $SIPM_HALF_SIZE), float(x + $SIPM_HALF_SIZE)
+        y_min, y_max = float(y - $SIPM_HALF_SIZE), float(y + $SIPM_HALF_SIZE)
         
         # Create temp config
         config_name = f'configs/temp_scan_x{x:.2f}_y{y:.2f}.yaml'
