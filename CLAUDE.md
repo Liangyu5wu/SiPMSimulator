@@ -38,6 +38,10 @@ python scripts/merge_scan_results.py                    # Default: HDF5 format w
 python scripts/merge_scan_results.py --format npz       # NPZ format (smaller, faster)
 python scripts/merge_scan_results.py --waveforms-only   # Waveforms+time+photon_times (60% smaller)
 python scripts/merge_scan_results.py --format split --chunk-size 5000 # Split into 5k-event chunks
+
+# Inspect merged results
+python scripts/inspect_merged_data.py                   # Default: check ../output/merged_scan_results.npz
+python scripts/inspect_merged_data.py path/to/file.h5   # Inspect specific file
 ```
 
 ### Pulse Shape Creation

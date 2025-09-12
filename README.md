@@ -141,6 +141,20 @@ python scripts/merge_scan_results.py --format split --chunk-size 5000  # Custom 
 - **Chunked output**: Split large datasets into manageable file sizes
 - **Compression**: Uses gzip compression for all formats
 
+### Inspecting Merged Data
+
+Check the contents and structure of merged files:
+
+```bash
+# Inspect default merged file
+python scripts/inspect_merged_data.py
+
+# Inspect specific file
+python scripts/inspect_merged_data.py ../output/my_data.npz
+```
+
+Shows file size, data arrays, dimensions, and basic statistics.
+
 ## Configuration
 
 Edit `configs/default.yaml` to adjust:
