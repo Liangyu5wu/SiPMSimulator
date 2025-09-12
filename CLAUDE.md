@@ -33,9 +33,11 @@ sbatch jobs/sipm_sim.sh
 ./jobs/position_scan.sh                           # Default scan: x[-6.65,-1.85], y[1.12,5.92]
 ./jobs/position_scan.sh -6.65 -6.25 1.12 1.52 0.4 # Custom: submits 4 individual jobs
 
-# Merge scan results
-python scripts/merge_scan_results.py             # Merge all position scan results, filter zero-photon events
-python scripts/merge_scan_results.py --min-photons 5 # Require ≥5 detected photons per event
+# Merge scan results (with size optimization)
+python scripts/merge_scan_results.py                    # Default: HDF5 format with all data
+python scripts/merge_scan_results.py --format npz       # NPZ format (smaller, faster)
+python scripts/merge_scan_results.py --waveforms-only   # Waveforms+time+photon_times (60% smaller)
+python scripts/merge_scan_results.py --format split --chunk-size 5000 # Split into 5k-event chunks
 ```
 
 ### Pulse Shape Creation

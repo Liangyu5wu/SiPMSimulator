@@ -120,22 +120,26 @@ The position scan automatically:
 After position scanning completes, merge all results into a single HDF5 file:
 
 ```bash
-# Merge all position scan results, automatically filter zero-photon events
+# Basic merge with default HDF5 format
 python scripts/merge_scan_results.py
 
-# Custom filtering: require minimum 5 detected photons per event
-python scripts/merge_scan_results.py --min-photons 5
+# Size optimization options:
+python scripts/merge_scan_results.py --format npz           # NPZ format (50-70% smaller, faster loading)
+python scripts/merge_scan_results.py --waveforms-only      # Waveforms+time+photon_times (60% size reduction)
+python scripts/merge_scan_results.py --format split        # Split into manageable chunks (10k events/file)
 
-# Specify output file name
-python scripts/merge_scan_results.py --output-file combined_results.h5
+# Advanced filtering and chunking:
+python scripts/merge_scan_results.py --min-photons 5 --format npz --waveforms-only
+python scripts/merge_scan_results.py --format split --chunk-size 5000  # Custom chunk size
 ```
 
-**Features:**
-- Automatically discovers all position scan directories matching `run_YYYYMMDD_x*_y*` pattern
-- Filters out events with zero detected photons for efficiency
-- Preserves position metadata (x,y coordinate ranges) for each event
-- Maintains identical HDF5 structure as individual scan files
-- Uses gzip compression for optimal storage
+**Features & Size Optimization:**
+- **Multiple formats**: HDF5 (full compatibility), NPZ (50-70% smaller), Split (chunked files)
+- **Waveforms-only mode**: Save essential data (waveforms + time_axis + detected photon times) for 60% size reduction
+- **Smart filtering**: Automatically removes zero-photon events by default
+- **Position tracking**: Preserves x,y coordinate ranges for each event (unless waveforms-only)
+- **Chunked output**: Split large datasets into manageable file sizes
+- **Compression**: Uses gzip compression for all formats
 
 ## Configuration
 
