@@ -28,6 +28,10 @@ python scripts/run_simulation.py --config configs/default.yaml --dry-run
 
 # SLURM cluster execution
 sbatch jobs/sipm_sim.sh
+
+# Position scanning (multiple SiPM positions)
+./jobs/submit_position_scan.sh                    # Default scan
+./jobs/submit_position_scan.sh -5.0 -2.0 3.0 6.0 0.4  # Custom parameters
 ```
 
 ### Pulse Shape Creation

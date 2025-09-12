@@ -76,10 +76,25 @@ python scripts/run_simulation.py --config configs/default.yaml --dry-run
 
 For running on SLURM clusters:
 
-1. **Submit job**:
+1. **Single position simulation**:
 ```bash
 sbatch jobs/sipm_sim.sh
 ```
+
+2. **Position scanning** (automated multi-position runs):
+```bash
+# Default scan: x=[-5.0 to -2.0], y=[3.0 to 6.0], step=0.4 cm
+./jobs/submit_position_scan.sh
+
+# Custom scan parameters
+./jobs/submit_position_scan.sh -5.0 -2.0 3.0 6.0 0.4
+```
+
+The position scan automatically:
+- Creates a grid of SiPM positions based on specified ranges and step size
+- Generates temporary config files for each position
+- Runs simulations sequentially with 0.3×0.3 cm SiPM active area
+- Saves results to separate timestamped directories
 
 ## Configuration
 
