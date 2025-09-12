@@ -30,8 +30,8 @@ python scripts/run_simulation.py --config configs/default.yaml --dry-run
 sbatch jobs/sipm_sim.sh
 
 # Position scanning (multiple SiPM positions)
-./jobs/submit_position_scan.sh                    # Default scan
-./jobs/submit_position_scan.sh -5.0 -2.0 3.0 6.0 0.4  # Custom parameters
+./jobs/position_scan.sh                           # Default scan: x[-6.65,-1.85], y[1.12,5.92]
+./jobs/position_scan.sh -6.65 -1.85 1.12 5.92 0.4 # Custom parameters
 ```
 
 ### Pulse Shape Creation

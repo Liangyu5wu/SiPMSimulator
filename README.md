@@ -83,11 +83,11 @@ sbatch jobs/sipm_sim.sh
 
 2. **Position scanning** (automated multi-position runs):
 ```bash
-# Default scan: x=[-5.0 to -2.0], y=[3.0 to 6.0], step=0.4 cm
-./jobs/submit_position_scan.sh
+# Default scan: x=[-6.65 to -1.85], y=[1.12 to 5.92], step=0.4 cm
+./jobs/position_scan.sh
 
-# Custom scan parameters
-./jobs/submit_position_scan.sh -5.0 -2.0 3.0 6.0 0.4
+# Custom scan parameters: x_start x_end y_start y_end step
+./jobs/position_scan.sh -6.65 -1.85 1.12 5.92 0.4
 ```
 
 The position scan automatically:
