@@ -115,6 +115,28 @@ The position scan automatically:
 - View logs: `tail -f ../logs/output_sipm_scan_*`
 - Each job is named `sipm_scan_XXX` with unique output files
 
+### Merging Scan Results
+
+After position scanning completes, merge all results into a single HDF5 file:
+
+```bash
+# Merge all position scan results, automatically filter zero-photon events
+python scripts/merge_scan_results.py
+
+# Custom filtering: require minimum 5 detected photons per event
+python scripts/merge_scan_results.py --min-photons 5
+
+# Specify output file name
+python scripts/merge_scan_results.py --output-file combined_results.h5
+```
+
+**Features:**
+- Automatically discovers all position scan directories matching `run_YYYYMMDD_x*_y*` pattern
+- Filters out events with zero detected photons for efficiency
+- Preserves position metadata (x,y coordinate ranges) for each event
+- Maintains identical HDF5 structure as individual scan files
+- Uses gzip compression for optimal storage
+
 ## Configuration
 
 Edit `configs/default.yaml` to adjust:

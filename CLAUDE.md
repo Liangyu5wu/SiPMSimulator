@@ -32,6 +32,10 @@ sbatch jobs/sipm_sim.sh
 # Position scanning (individual jobs per region)
 ./jobs/position_scan.sh                           # Default scan: x[-6.65,-1.85], y[1.12,5.92]
 ./jobs/position_scan.sh -6.65 -6.25 1.12 1.52 0.4 # Custom: submits 4 individual jobs
+
+# Merge scan results
+python scripts/merge_scan_results.py             # Merge all position scan results, filter zero-photon events
+python scripts/merge_scan_results.py --min-photons 5 # Require ≥5 detected photons per event
 ```
 
 ### Pulse Shape Creation
