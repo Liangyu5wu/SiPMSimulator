@@ -105,9 +105,15 @@ sbatch jobs/sipm_sim.sh
 
 The position scan automatically:
 - Creates scan regions based on lower bound ranges and step spacing
-- Generates temporary config files for each 0.3×0.3 cm region
-- Runs simulations sequentially for each region
+- **Submits individual SLURM jobs for each 0.3×0.3 cm region** (parallel execution)
+- Each job uses 4GB memory and 2-hour time limit for efficient resource usage
+- Generates temporary config files and runs simulations independently
 - Saves results to separate timestamped directories
+
+**Job Management:**
+- Monitor all jobs: `squeue -u $USER`
+- View logs: `tail -f ../logs/output_sipm_scan_*`
+- Each job is named `sipm_scan_XXX` with unique output files
 
 ## Configuration
 
