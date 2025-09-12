@@ -24,9 +24,14 @@ if [[ -z "$SLURM_JOB_ID" ]]; then
     # Show expected grid
     python3 -c "
 import numpy as np
-x_pos = np.arange($X_START, $X_END + $STEP/2, $STEP)
-y_pos = np.arange($Y_START, $Y_END + $STEP/2, $STEP)
-print(f'Expected positions: {len(x_pos)} × {len(y_pos)} = {len(x_pos)*len(y_pos)}')
+x_bounds = np.arange($X_START, $X_END + $STEP/2, $STEP)
+y_bounds = np.arange($Y_START, $Y_END + $STEP/2, $STEP)
+total = len(x_bounds) * len(y_bounds)
+print(f'Expected scan regions: {len(x_bounds)} × {len(y_bounds)} = {total}')
+print(f'Each region size: 0.3 × 0.3 cm')
+print(f'First region: x[{x_bounds[0]:.2f}, {x_bounds[0]+0.3:.2f}], y[{y_bounds[0]:.2f}, {y_bounds[0]+0.3:.2f}]')
+if total > 1:
+    print(f'Last region: x[{x_bounds[-1]:.2f}, {x_bounds[-1]+0.3:.2f}], y[{y_bounds[-1]:.2f}, {y_bounds[-1]+0.3:.2f}]')
 "
     
     # Create and submit SLURM job
@@ -58,33 +63,35 @@ else
     cd /fs/ddn/sdf/group/atlas/d/liangyu/dSiPM/fasttiming/SiPMSimulator
     source setup.sh
     
-    # Generate and process positions
+    # Generate and process scan regions
     python3 -c "
 import numpy as np
 import yaml
 import os
 
-x_positions = np.arange($X_START, $X_END + $STEP/2, $STEP)
-y_positions = np.arange($Y_START, $Y_END + $STEP/2, $STEP)
-total = len(x_positions) * len(y_positions)
+# Generate x and y lower bounds for each scan region
+x_lower_bounds = np.arange(float('$X_START'), float('$X_END') + float('$STEP')/2, float('$STEP'))
+y_lower_bounds = np.arange(float('$Y_START'), float('$Y_END') + float('$STEP')/2, float('$STEP'))
+total = len(x_lower_bounds) * len(y_lower_bounds)
 
-print(f'Processing {total} positions...')
+print(f'Processing {total} scan regions...')
 
-for i, x in enumerate(x_positions):
-    for j, y in enumerate(y_positions):
-        pos_num = i * len(y_positions) + j + 1
-        print(f'Position {pos_num}/{total}: center=({x:.2f}, {y:.2f})')
+for i, x_min in enumerate(x_lower_bounds):
+    for j, y_min in enumerate(y_lower_bounds):
+        pos_num = i * len(y_lower_bounds) + j + 1
         
-        # Calculate bounds and convert to native Python float
-        x_min, x_max = float(x - $SIPM_HALF_SIZE), float(x + $SIPM_HALF_SIZE)
-        y_min, y_max = float(y - $SIPM_HALF_SIZE), float(y + $SIPM_HALF_SIZE)
+        # Calculate region bounds: each region is 0.3 x 0.3 cm
+        x_max = float(x_min + 2 * $SIPM_HALF_SIZE)
+        y_max = float(y_min + 2 * $SIPM_HALF_SIZE)
+        
+        print(f'Region {pos_num}/{total}: x[{x_min:.2f}, {x_max:.2f}], y[{y_min:.2f}, {y_max:.2f}]')
         
         # Create temp config
-        config_name = f'configs/temp_scan_x{x:.2f}_y{y:.2f}.yaml'
+        config_name = f'configs/temp_scan_x{x_min:.2f}_y{y_min:.2f}.yaml'
         with open('configs/default.yaml', 'r') as f:
             config = yaml.safe_load(f)
-        config['photon_filter']['x_range'] = [x_min, x_max]
-        config['photon_filter']['y_range'] = [y_min, y_max]
+        config['photon_filter']['x_range'] = [float(x_min), float(x_max)]
+        config['photon_filter']['y_range'] = [float(y_min), float(y_max)]
         with open(config_name, 'w') as f:
             yaml.dump(config, f, default_flow_style=False, indent=2)
         
@@ -92,6 +99,6 @@ for i, x in enumerate(x_positions):
         os.system(f'python scripts/run_simulation.py --config {config_name}')
         os.remove(config_name)
 
-print(f'Scan complete: {total} positions processed')
+print(f'Scan complete: {total} regions processed')
 "
 fi

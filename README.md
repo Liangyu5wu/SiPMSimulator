@@ -87,13 +87,26 @@ sbatch jobs/sipm_sim.sh
 ./jobs/position_scan.sh
 
 # Custom scan parameters: x_start x_end y_start y_end step
-./jobs/position_scan.sh -6.65 -1.85 1.12 5.92 0.4
+# Example: 2x2 grid with regions spaced 0.4 cm apart
+./jobs/position_scan.sh -6.65 -6.25 1.12 1.52 0.4
 ```
 
+**Parameter Logic:**
+- `x_start`, `x_end`: Lower bounds of first and last scan regions in X
+- `y_start`, `y_end`: Lower bounds of first and last scan regions in Y  
+- `step`: Spacing between region lower bounds
+- Each region is fixed at 0.3×0.3 cm (SiPM active area)
+
+**Example:** `-6.65 -6.25 1.12 1.52 0.4` creates 4 regions:
+- Region 1: x[-6.65, -6.35], y[1.12, 1.42]
+- Region 2: x[-6.25, -5.95], y[1.12, 1.42]  
+- Region 3: x[-6.65, -6.35], y[1.52, 1.82]
+- Region 4: x[-6.25, -5.95], y[1.52, 1.82]
+
 The position scan automatically:
-- Creates a grid of SiPM positions based on specified ranges and step size
-- Generates temporary config files for each position
-- Runs simulations sequentially with 0.3×0.3 cm SiPM active area
+- Creates scan regions based on lower bound ranges and step spacing
+- Generates temporary config files for each 0.3×0.3 cm region
+- Runs simulations sequentially for each region
 - Saves results to separate timestamped directories
 
 ## Configuration

@@ -31,7 +31,7 @@ sbatch jobs/sipm_sim.sh
 
 # Position scanning (multiple SiPM positions)
 ./jobs/position_scan.sh                           # Default scan: x[-6.65,-1.85], y[1.12,5.92]
-./jobs/position_scan.sh -6.65 -1.85 1.12 5.92 0.4 # Custom parameters
+./jobs/position_scan.sh -6.65 -6.25 1.12 1.52 0.4 # Custom: 2x2 grid example
 ```
 
 ### Pulse Shape Creation
