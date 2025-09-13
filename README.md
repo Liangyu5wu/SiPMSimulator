@@ -193,19 +193,20 @@ python scripts/create_ml_dataset.py --max-photons 80
 Automated parameter optimization for photon arrival time prediction:
 
 ```bash
-# Local execution
+# Local execution (216 parameter combinations)
 cd ml_training/
 python param_sweep.py
 
-# SLURM cluster execution  
+# SLURM cluster execution (30 parallel jobs, ~7 combinations each)
 sbatch ml_training/ml_param_sweep.sh
 ```
 
 **Features:**
 - **Model Architecture**: 3-layer 1D CNN with time-aligned output for photon deconvolution
-- **Parameter Grid**: Learning rates, batch sizes, filter configurations, kernel sizes
+- **Parameter Grid**: 6 learning rates [1e-5 to 5e-3], 3 batch sizes, 4 filter configs, 3 kernel configs
+- **Parallel Execution**: Automatically splits 216 combinations across 30 SLURM jobs for faster completion
 - **Metrics**: Training/validation Poisson loss, prediction-truth correlation
-- **Output**: Ranked results saved to `param_sweep_results.csv`
+- **Output**: Individual job results saved to `param_sweep_results_job_XX.csv`
 
 The model predicts photon counts per time bin, enabling reconstruction of photon arrival times from SiPM waveforms.
 

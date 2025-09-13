@@ -2,13 +2,12 @@
 """Parameter sweep for photon deconvolution model"""
 import tensorflow as tf
 import numpy as np
-import matplotlib.pyplot as plt
 from itertools import product
 import pandas as pd
 
 # Parameter grid
 param_grid = {
-    'lr': [1e-5, 5e-5, 1e-4, 5e-4, 1e-3],
+    'lr': [1e-5, 5e-5, 1e-4, 5e-4, 1e-3, 5e-3],
     'batch_size': [32, 64, 128],
     'filters': [[16, 8], [12, 6], [20, 10], [24, 12]],
     'kernels': [[9, 7, 5], [7, 5, 3], [11, 9, 7]]
@@ -85,6 +84,8 @@ def run_experiment(params, X_train, y_train, X_val, y_val, X_test, y_test):
     }
 
 if __name__ == "__main__":
+    import os
+    
     # Load data
     waveforms, photon_times, time_axis, (train_idx, val_idx, test_idx) = load_data()
     targets = create_targets(photon_times, time_axis)
@@ -95,14 +96,42 @@ if __name__ == "__main__":
     
     print(f"Data loaded: Train {X_train.shape}, Val {X_val.shape}, Test {X_test.shape}")
     
+    # Get all parameter combinations
+    all_combinations = list(product(*param_grid.values()))
+    total_runs = len(all_combinations)
+    
+    # Check if running as SLURM job array
+    job_id = os.environ.get('SLURM_ARRAY_TASK_ID')
+    if job_id is not None:
+        job_id = int(job_id)
+        total_jobs = 30  # Fixed number of jobs
+        
+        # Split combinations across jobs
+        combinations_per_job = total_runs // total_jobs
+        remainder = total_runs % total_jobs
+        
+        start_idx = job_id * combinations_per_job + min(job_id, remainder)
+        if job_id < remainder:
+            end_idx = start_idx + combinations_per_job + 1
+        else:
+            end_idx = start_idx + combinations_per_job
+            
+        job_combinations = all_combinations[start_idx:end_idx]
+        print(f"Job {job_id}/{total_jobs}: Running {len(job_combinations)} combinations ({start_idx}-{end_idx-1})")
+        output_file = f'param_sweep_results_job_{job_id:02d}.csv'
+    else:
+        # Run all combinations (original behavior)
+        job_combinations = all_combinations
+        print(f"Running all {total_runs} combinations")
+        output_file = 'param_sweep_results.csv'
+    
     # Run parameter sweep
     results = []
-    total_runs = len(list(product(*param_grid.values())))
     
-    for i, (lr, batch_size, filters, kernels) in enumerate(product(*param_grid.values())):
+    for i, (lr, batch_size, filters, kernels) in enumerate(job_combinations):
         params = {'lr': lr, 'batch_size': batch_size, 'filters': filters, 'kernels': kernels}
         
-        print(f"Run {i+1}/{total_runs}: lr={lr}, bs={batch_size}, filters={filters}, kernels={kernels}")
+        print(f"Run {i+1}/{len(job_combinations)}: lr={lr}, bs={batch_size}, filters={filters}, kernels={kernels}")
         
         try:
             result = run_experiment(params, X_train, y_train, X_val, y_val, X_test, y_test)
@@ -113,10 +142,15 @@ if __name__ == "__main__":
             print(f"  -> FAILED: {e}")
     
     # Save results
-    df = pd.DataFrame(results)
-    df = df.sort_values('val_loss')
-    df.to_csv('param_sweep_results.csv', index=False)
-    
-    print(f"\nParameter sweep complete! Results saved to param_sweep_results.csv")
-    print("\nBest 5 configurations:")
-    print(df.head()[['lr', 'batch_size', 'filters', 'kernels', 'val_loss', 'correlation']].to_string())
+    if results:
+        df = pd.DataFrame(results)
+        df = df.sort_values('val_loss')
+        df.to_csv(output_file, index=False)
+        
+        print(f"\nParameter sweep complete! Results saved to {output_file}")
+        print(f"Completed {len(results)} successful runs out of {len(job_combinations)} attempted")
+        if len(results) > 0:
+            print("\nBest configurations for this job:")
+            print(df.head()[['lr', 'batch_size', 'filters', 'kernels', 'val_loss', 'correlation']].to_string())
+    else:
+        print(f"\nNo successful runs completed")
