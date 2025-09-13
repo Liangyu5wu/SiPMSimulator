@@ -16,7 +16,7 @@ param_grid = {
 
 def load_data():
     """Load and split dataset"""
-    data = np.load("../../output/ml_training_dataset.npz", mmap_mode='r')
+    data = np.load("../output/ml_training_dataset.npz", mmap_mode='r')
     waveforms, photon_times, time_axis = data['waveforms'], data['photon_times_detected_jittered'], data['time_axis']
     
     N = len(waveforms)
