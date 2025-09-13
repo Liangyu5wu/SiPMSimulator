@@ -104,7 +104,7 @@ if __name__ == "__main__":
     job_id = os.environ.get('SLURM_ARRAY_TASK_ID')
     if job_id is not None:
         job_id = int(job_id)
-        total_jobs = 30  # Fixed number of jobs
+        total_jobs = 100  # Fixed number of jobs
         
         # Split combinations across jobs
         combinations_per_job = total_runs // total_jobs

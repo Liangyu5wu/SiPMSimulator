@@ -198,7 +198,7 @@ Automated parameter optimization for photon arrival time prediction:
 cd ml_training/
 python param_sweep.py
 
-# SLURM cluster execution (30 parallel jobs, ~7 combinations each)
+# SLURM cluster execution (100 parallel jobs, ~2 combinations each)
 sbatch ml_training/ml_param_sweep.sh
 
 # After all jobs complete, merge results and cleanup
@@ -209,7 +209,7 @@ python merge_results.py
 **Features:**
 - **Model Architecture**: 3-layer 1D CNN with time-aligned output for photon deconvolution
 - **Parameter Grid**: 6 learning rates [1e-5 to 5e-3], 3 batch sizes, 4 filter configs, 3 kernel configs
-- **Parallel Execution**: Automatically splits 216 combinations across 30 SLURM jobs for faster completion
+- **Parallel Execution**: Automatically splits 216 combinations across 100 SLURM jobs for faster completion
 - **Metrics**: Training/validation Poisson loss, prediction-truth correlation
 - **Output**: Individual job results saved to `param_sweep_results_job_XX.csv`, merged to `param_sweep_results.csv`
 

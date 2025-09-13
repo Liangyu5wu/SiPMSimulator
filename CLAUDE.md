@@ -50,7 +50,7 @@ python scripts/create_ml_dataset.py --max-photons 80    # Custom photon count th
 # Machine learning model parameter sweep
 cd ml_training/
 python param_sweep.py                                   # Local execution for parameter optimization (216 combinations)
-sbatch ml_param_sweep.sh                                # SLURM cluster execution (30 parallel jobs, ~7 combinations each)
+sbatch ml_param_sweep.sh                                # SLURM cluster execution (100 parallel jobs, ~2 combinations each)
 python merge_results.py                                 # Merge parallel results after jobs complete
 ```
 

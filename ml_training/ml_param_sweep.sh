@@ -5,7 +5,7 @@
 #SBATCH --job-name=ml_param_sweep
 #SBATCH --output=../logs/output_ml_param_sweep-%A_%a.txt
 #SBATCH --error=../logs/error_ml_param_sweep-%A_%a.txt
-#SBATCH --array=0-29
+#SBATCH --array=0-99
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=8g
