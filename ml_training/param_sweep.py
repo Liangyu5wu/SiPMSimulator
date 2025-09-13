@@ -62,7 +62,7 @@ def run_experiment(params, X_train, y_train, X_val, y_val, X_test, y_test):
     ]
     
     history = model.fit(X_train, y_train, validation_data=(X_val, y_val),
-                       batch_size=params['batch_size'], epochs=30, 
+                       batch_size=params['batch_size'], epochs=15, 
                        callbacks=callbacks, verbose=0)
     
     # Get best epoch metrics
