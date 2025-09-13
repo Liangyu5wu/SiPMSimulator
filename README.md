@@ -31,7 +31,9 @@ SiPMSimulator/
 │   ├── inspect_merged_data.py   # Inspect datasets (merged/ML)
 │   └── create_ml_dataset.py     # Create ML training datasets
 ├── ml_training/            # Machine learning code
-│   └── dataset_analysis.ipynb  # Dataset analysis notebook
+│   ├── dataset_analysis.ipynb  # Dataset analysis notebook
+│   ├── param_sweep.py          # ML model parameter sweeping
+│   └── ml_param_sweep.sh       # SLURM job for parameter sweep
 ├── configs/                # Configuration files
 │   └── default.yaml        # Default simulation parameters
 ├── jobs/                   # SLURM job scripts
@@ -183,6 +185,29 @@ python scripts/create_ml_dataset.py --max-photons 80
 - Filter events with excessive photon counts (≥95 photons) to remove anomalies
 - Preserve only essential data: `waveforms`, `time_axis`, `photon_times_detected_jittered`
 - Generate clean, ready-to-use ML training data
+
+## Machine Learning
+
+### Photon Deconvolution Parameter Sweep
+
+Automated parameter optimization for photon arrival time prediction:
+
+```bash
+# Local execution
+cd ml_training/
+python param_sweep.py
+
+# SLURM cluster execution  
+sbatch ml_training/ml_param_sweep.sh
+```
+
+**Features:**
+- **Model Architecture**: 3-layer 1D CNN with time-aligned output for photon deconvolution
+- **Parameter Grid**: Learning rates, batch sizes, filter configurations, kernel sizes
+- **Metrics**: Training/validation Poisson loss, prediction-truth correlation
+- **Output**: Ranked results saved to `param_sweep_results.csv`
+
+The model predicts photon counts per time bin, enabling reconstruction of photon arrival times from SiPM waveforms.
 
 ## Configuration
 

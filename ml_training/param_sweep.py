@@ -8,7 +8,7 @@ import pandas as pd
 
 # Parameter grid
 param_grid = {
-    'lr': [1e-5, 5e-5, 1e-4, 5e-4, 1e-3, 5e-3, 1e-2],
+    'lr': [1e-5, 5e-5, 1e-4, 5e-4, 1e-3],
     'batch_size': [32, 64, 128],
     'filters': [[16, 8], [12, 6], [20, 10], [24, 12]],
     'kernels': [[9, 7, 5], [7, 5, 3], [11, 9, 7]]
@@ -58,7 +58,7 @@ def run_experiment(params, X_train, y_train, X_val, y_val, X_test, y_test):
     model = build_model(X_train.shape[1], params['filters'], params['kernels'], params['lr'])
     
     callbacks = [
-        tf.keras.callbacks.ReduceLROnPlateau(patience=5, factor=0.5, min_lr=1e-6, verbose=0),
+        tf.keras.callbacks.ReduceLROnPlateau(patience=5, factor=0.5, min_lr=1e-7, verbose=0),
         tf.keras.callbacks.EarlyStopping(patience=15, restore_best_weights=True, verbose=0)
     ]
     

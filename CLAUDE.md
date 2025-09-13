@@ -46,6 +46,11 @@ python scripts/inspect_merged_data.py path/to/file.npz  # Inspect specific file
 # Create ML dataset (filtered and cleaned for training)
 python scripts/create_ml_dataset.py                     # Filter out-of-window photons and high-photon events
 python scripts/create_ml_dataset.py --max-photons 80    # Custom photon count threshold
+
+# Machine learning model parameter sweep
+cd ml_training/
+python param_sweep.py                                   # Local execution for parameter optimization  
+sbatch ml_param_sweep.sh                                # SLURM cluster execution for parameter sweep
 ```
 
 ### Pulse Shape Creation
