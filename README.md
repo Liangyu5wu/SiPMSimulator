@@ -33,7 +33,8 @@ SiPMSimulator/
 ├── ml_training/            # Machine learning code
 │   ├── dataset_analysis.ipynb  # Dataset analysis notebook
 │   ├── param_sweep.py          # ML model parameter sweeping
-│   └── ml_param_sweep.sh       # SLURM job for parameter sweep
+│   ├── ml_param_sweep.sh       # SLURM job array for parallel parameter sweep
+│   └── merge_results.py        # Merge parallel sweep results
 ├── configs/                # Configuration files
 │   └── default.yaml        # Default simulation parameters
 ├── jobs/                   # SLURM job scripts
@@ -199,6 +200,10 @@ python param_sweep.py
 
 # SLURM cluster execution (30 parallel jobs, ~7 combinations each)
 sbatch ml_training/ml_param_sweep.sh
+
+# After all jobs complete, merge results and cleanup
+cd ml_training/
+python merge_results.py
 ```
 
 **Features:**
@@ -206,7 +211,7 @@ sbatch ml_training/ml_param_sweep.sh
 - **Parameter Grid**: 6 learning rates [1e-5 to 5e-3], 3 batch sizes, 4 filter configs, 3 kernel configs
 - **Parallel Execution**: Automatically splits 216 combinations across 30 SLURM jobs for faster completion
 - **Metrics**: Training/validation Poisson loss, prediction-truth correlation
-- **Output**: Individual job results saved to `param_sweep_results_job_XX.csv`
+- **Output**: Individual job results saved to `param_sweep_results_job_XX.csv`, merged to `param_sweep_results.csv`
 
 The model predicts photon counts per time bin, enabling reconstruction of photon arrival times from SiPM waveforms.
 
